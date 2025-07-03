@@ -40,6 +40,8 @@ Task 5. Deploy an application to a private Kubernetes Engine cluster
 
 gcloud compute ssh --zone $ZONE $JUMPHOST_NAME
 
+gcloud compute zones list --filter="name~'europe-west4'"
+
 gcloud config set compute/zone europe-west1
 
 gcloud container clusters get-credentials orca-cluster-663 --internal-ip
