@@ -6,7 +6,7 @@ export SUBNET_NAME=orca-build-subnet
 export JUMPHOST_NAME=orca-jumphost
 export ZONE=europe-west4
 
-Task 1
+Task 1. Create a custom security role
 
 gcloud config set compute/zone $ZONE
 vi role-definition.yaml
