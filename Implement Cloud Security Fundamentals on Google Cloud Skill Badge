@@ -1,3 +1,5 @@
+Video: https://www.youtube.com/watch?v=wa_w0chEn64&t=281s
+
 export CUSTOM_SECURIY_ROLE=orca_storage_editor_604
 export SERVICE_ACCOUNT=orca-private-cluster-436-sa
 export CLUSTER_NAME=orca-cluster-663
