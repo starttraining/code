@@ -1,0 +1,182 @@
+Video: https://youtu.be/bRBrtE9vIsQ
+
+Overview
+In this lab, you will learn more fundamentals of sports data science by writing and executing queries to query data stored in BigQuery tables. The emphasis of the lab is to illustrate how the database works and answer some interesting questions related to the following topics in soccer.
+
+Most total goals scored.
+Most attempted passes.
+Best penalty success rate.
+The data used in this lab comes from the following sources:
+
+Pappalardo et al., (2019) A public data set of spatio-temporal match events in soccer competitions, Nature Scientific Data 6:236, https://www.nature.com/articles/s41597-019-0247-7
+Pappalardo et al. (2019) PlayerRank: Data-driven Performance Evaluation and Player Ranking in Soccer via a Machine Learning Approach. ACM Transactions on Intelligent Systems and Technologies (TIST) 10, 5, Article 59 (September 2019), 27 pages. DOI: https://doi.org/10.1145/3343172
+Objectives
+In this lab, you will learn how to:
+
+Query soccer match event data in BigQuery.
+Write and execute queries that join information from multiple tables.
+
+Task 1. Open BigQuery
+The BigQuery console provides an interface to query tables, including public datasets offered by BigQuery.
+
+In the Cloud Console, from the Navigation menu select BigQuery:
+The Cloud Console navigation menu, wherein the option BigQuery is selected.
+
+The Welcome to BigQuery in the Cloud Console message box opens. This message box provides a link to the quickstart guide and the release notes.
+
+Click Done.
+The BigQuery console opens.
+
+The BigQuery console, which includes the Editor section and the Explorer pane.
+
+Note: The process for creating the dataset and tables is taught in the BigQuery Soccer Data Ingestion lab. In this lab the focus is on learning how to query the information.
+Once the tables are created the display will be similar to this:
+
+The Explorer pane, wherein the soccer file is highlighted within the list of pinned projects.
+
+In the next section, begin to learn the fundamentals of creating queries in BigQuery.
+
+Task 2. Matches with the most goals
+In this section, create a query that joins together multiple tables featuring soccer data. Based on the information available, you can perform some basic analytics such as the most total goals scored in a match by both teams (in a specific league).
+
+In the Query editor, click "+" (Create SQL query).
+Add the following query to the query Editor:
+SELECT
+ date,
+ label,
+ (team1.score + team2.score) AS totalGoals
+FROM
+ `soccer.matches` Matches
+LEFT JOIN
+ `soccer.competitions` Competitions ON
+   Matches.competitionId = Competitions.wyId
+WHERE
+ status = 'Played' AND
+ Competitions.name = 'Spanish first division'
+ORDER BY
+ totalGoals DESC, date DESC
+Copied!
+Here is what the query will do:
+
+joins the matches table (which has final scores) with the competitions table.
+filter down to "Spanish first division" matches only.
+order by a calculated field that represents total goals in a match.
+Click Run.
+The results are displayed below the query window.
+
+The Query results page, wherein several results are listed.
+
+Click Check my progress to verify the objective
+
+Check the query has been run
+In this section BigQuery was used to illustrate how to define a query that shows soccer information. The query creates a filter that displays specific information about matches from a specific league and enables the information to be categorized by a defined field.
+
+Task 3. Players with the most passes
+In this section, create a query that joins together multiple tables featuring soccer data. Based on the information available, you can perform some basic analytics such as total passes by players.
+
+In the Query editor, click "+" (Create SQL query).
+Add the following query into the query Editor:
+SELECT
+ playerId,
+ (Players.firstName || ' ' || Players.lastName) AS playerName,
+ COUNT(id) AS numPasses
+
+FROM
+ `soccer.events` Events
+
+LEFT JOIN
+ `soccer.players` Players ON
+   Events.playerId = Players.wyId
+
+WHERE
+ eventName = 'Pass'
+
+GROUP BY
+ playerId, playerName
+
+ORDER BY
+ numPasses DESC
+
+LIMIT 10
+Copied!
+This query:
+
+joins the events table (which has a record of every pass) with the players table to get player names from their IDs
+groups by player
+counts the number of passes for each one
+orders by the players with the most passes
+Click Run. The results are displayed below the query window.
+Click Check my progress to verify the objective
+
+Check the query has been run
+In this section BigQuery was used to illustrate how to define a query that shows player information. The query creates a join that displays specific information about a playerId and enables the information to be categorized by a defined field.
+
+In the next section learn more about the existing dataset and explore how it can be used to determine the penalty kick success rate of players.
+
+Task 4. Determine penalty kick success rate
+In this section, create a query that joins together multiple tables featuring soccer data. Based on the information available, you can perform some analytics such as the success rate on penalty kicks by each player.
+
+In the Query editor, click "+" (Create SQL query).
+Copy and paste the following query into the query Editor:
+SELECT
+ playerId,
+ (Players.firstName || ' ' || Players.lastName) AS playerName,
+ COUNT(id) AS numPKAtt,
+ SUM(IF(101 IN UNNEST(tags.id), 1, 0)) AS numPKGoals,
+
+ SAFE_DIVIDE(
+   SUM(IF(101 IN UNNEST(tags.id), 1, 0)),
+   COUNT(id)
+   ) AS PKSuccessRate
+
+FROM
+ `soccer.events` Events
+
+LEFT JOIN
+ `soccer.players` Players ON
+   Events.playerId = Players.wyId
+
+WHERE
+ eventName = 'Free Kick' AND
+ subEventName = 'Penalty'
+
+GROUP BY
+ playerId, playerName
+
+HAVING
+ numPkAtt >= 5
+
+ORDER BY
+ PKSuccessRate DESC, numPKAtt DESC
+Copied!
+The query aggregates the number of penalty kick attempts and successful ones by player and filters to those with at least 5 penalty kick attempts before ordering by success rate.
+
+Note: The above query joins the events table, in this case filtered to only penalty kicks, with the players table to get player names from their IDs.
+The tags field in the events table uses BigQuery's array functionality (allowing more than 1 tag to be stored per event), so it must be unnested to determine if the kick was good or not (one can confirm that tag 101 represents a goal using the tags2name table).
+Click Run. The results are displayed below the query window.
+Click Check my progress to verify the objective
+
+Check the query has been run
+In this section BigQuery was used to illustrate how to define a query that shows player information relating to penalty kicks. The query creates a join that displays specific information about a playerId and enables more detailed information to be displayed.
+
+Task 5. Pop quiz
+Test your understanding of BigQuery by completing the short quiz on the topics covered in this lab.
+
+
+How many different Spanish first division matches achieved the highest number of total goals in our data?
+3
+6
+1
+
+
+Which player attempted the most passes in the data?
+Tony Kroos
+Kyle Walker
+Granit Hkaka
+
+
+How many players attempted at least 5 penalty kicks in this data?
+20
+31
+6
+
