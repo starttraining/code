@@ -27,7 +27,7 @@ Scouting & recruitment	Evaluate players based on shot quality, not just goals sc
 In binary classification problems like your xG logistic regression model, Log Loss and ROC AUC are two critical metrics under Aggregate Metrics for evaluating model quality. Here's why they matter:
 
 📊 Quick Comparison
-Metric	  Goal	                        Ideal Value	  Your Model
+Metric	      Goal	                        Ideal Value	  Your Model
 Log Loss	Accurate probabilities	      Near 0	      0.3526
 ROC AUC	  Accurate ranking (separation)	Close to 1	  0.7700
 
