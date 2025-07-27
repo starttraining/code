@@ -1,3 +1,25 @@
+In binary classification problems like your xG logistic regression model, Log Loss and ROC AUC are two critical metrics under Aggregate Metrics for evaluating model quality. Here's why they matter:
+
+📊 Quick Comparison
+Metric	  Goal	                        Ideal Value	  Your Model
+Log Loss	Accurate probabilities	      Near 0	      0.3526
+ROC AUC	  Accurate ranking (separation)	Close to 1	  0.7700
+
+✅ Summary
+Use Log Loss when:
+You care about probability calibration (important in xG models).
+You're using the model output directly in decision-making.
+
+Use ROC AUC when:
+You want to evaluate ranking/separation power.
+You're comparing models or tuning thresholds.
+
+🔍 What this means:
+Logistic regression assigns weights to each input feature. These weights indicate how each feature affects the probability of the outcome (isGoal = true):
+Positive weight → Increases the likelihood of a goal
+Negative weight → Decreases the likelihood of a goal
+Higher absolute value → Greater impact on the prediction
+
 🔢 Coefficient Interpretation
 Feature	      Category/Value	  Weight	  Interpretation
 shotType	    Shot	            -1.297	  Basic shots have the lowest chance of scoring among types.
@@ -6,3 +28,5 @@ shotType	    Shot	            -1.297	  Basic shots have the lowest chance of sco
 shotDistance	(numeric)	        -0.051	  Every extra unit of distance from goal reduces goal probability.
 shotAngle	    (numeric)	         +0.035	  Wider (more open) angles slightly increase goal probability.
 __INTERCEPT__	—	                -1.089	  Baseline value when all features are 0 (not interpretable alone).
+
+
