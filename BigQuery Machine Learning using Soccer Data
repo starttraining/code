@@ -28,8 +28,8 @@ In binary classification problems like your xG logistic regression model, Log Lo
 
 📊 Quick Comparison
 Metric	      Goal	                        Ideal Value	  Your Model
-Log Loss	Accurate probabilities	      Near 0	      0.3526
-ROC AUC	  Accurate ranking (separation)	Close to 1	  0.7700
+Log Loss	  Accurate probabilities	      Near 0	      0.3526
+ROC AUC	      Accurate ranking (separation)	Close to 1	  0.7700
 
 ✅ Summary
 Use Log Loss when:
