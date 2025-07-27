@@ -1,0 +1,8 @@
+🔢 Coefficient Interpretation
+Feature	      Category/Value	  Weight	  Interpretation
+shotType	    Shot	            -1.297	  Basic shots have the lowest chance of scoring among types.
+              Free kick shot	  -0.910	  Free kick shots are also less likely to score.
+              Penalty	          +1.148	  Penalties have the highest probability of scoring.
+shotDistance	(numeric)	        -0.051	  Every extra unit of distance from goal reduces goal probability.
+shotAngle	    (numeric)	         +0.035	  Wider (more open) angles slightly increase goal probability.
+__INTERCEPT__	—	                -1.089	  Baseline value when all features are 0 (not interpretable alone).
