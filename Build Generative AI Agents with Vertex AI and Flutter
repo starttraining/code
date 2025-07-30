@@ -52,3 +52,54 @@ Correct! The Gemini 1.0 Pro Vision model is multimodal and can understand input 
 
 The Gemini 1.5 Pro model supports long context understanding up to the maximum input token limit.
 Correct! This model supports long-context understanding with a 2M token context window. To process a prompt, generative AI models break down text and other data in a prompt into units called tokens. A token can be characters, words, or phrases and depends on the tokenizer used.
+
+
+**************************************************************
+Part 2 Quiz
+**************************************************************
+1. What are the four main components in Vertex AI that are used to build Gen AI applications with Reasoning Engine?
+check
+Orchestration framework
+Correct! Vertex AI includes the LangChain orchestration framework that allows you to create and manage AI agents, and ensure that data is passed correctly between the agents, LLMs, and tools.
+Managed runtime
+Correct! Vertex AI provides the Reasoning Engine managed runtime as a service that comes with security, privacy, observability, and scalability features.
+check
+Model
+Correct! The model processes a prompt and provides a response. While processing a prompt, the model delegates certain tasks to the tools that you define.
+check
+Tools
+Correct! You can define a set of tools that communicate with external APIs and provide them to the model.
+
+2. What are some capabilities of Vertex AI Agent Builder? Select four.
+check
+You can control data privacy in your AI apps using Vertex AI Agent Builder.
+Correct! Vertex AI Agent Builder offers built-in security, compliance, and governance features, allowing you to manage access and maintain data privacy in your AI apps.
+check
+Ground model output.
+Correct! Using Vertex AI Agent Builder, you can ground model output with Google Search or with your own data.
+check
+Create AI agents with orchestration tools in Gen AI applications.
+Correct! You can use Vertex AI Reasoning Engine with Function Calling to orchestrate model response in Gen AI applications.
+check
+You can design and implement conversational interfaces in your applications.
+Correct! With Vertex AI Agent Builder tools, you can easily design and integrate a conversational user interface into your mobile, web, or other application.
+
+3. What are some characteristics of AI Agent apps? Select two.
+AI Agent apps use LLMs for reasoning and orchestration.
+Correct! An AI Agent app uses the power of large language models for reasoning and orchestration with external tools to achieve a certain goal.
+check
+AI Agent apps help you to get responses that contain the latest information, and lower the risk of hallucination with Gen AI models.
+Correct! Using AI Agent apps, you can ground a model with external data sources to get the latest information, and lower the risk of model hallucination.
+
+4. What are some uses of Vertex AI Search? Select three.
+To build search capabilities on your own data for your website or app.
+Correct! With Vertex AI Search, you can quickly build a search app on your own data for your website or app.
+check
+To ground model output with your enterprise data.
+Correct! To ground models in your enterprise data, you can use the RAG system from Vertex AI Search.
+check
+To generate recommendations on your own data.
+Correct. With Vertex AI Search, you can build a generic recommendations app on your own data that can suggest content similar to the content that the user is currently viewing.
+
+
+
