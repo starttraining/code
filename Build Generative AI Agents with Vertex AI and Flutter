@@ -1,0 +1,45 @@
+Quiz
+
+Your score: 100% Passing score: 80%
+Congratulations! You passed this assessment.
+
+1. What are some ways to describe generative AI? Select three.
+check
+Generative AI works by using a machine learning model to learn patterns in data.
+Correct! Generative AI works by using a machine learning model to learn the patterns and relationships in a dataset, and then uses the learned patterns to generate new content.
+check
+Generative AI is powered by foundation models (large AI models).
+Correct! Generative AI is powered by foundation models that can perform many tasks, such as text summarization, Q&A, classification, translation, image generation, and more.
+check
+Generative AI is a technology that can produce various types of content, including text, and images.
+Correct! Generative AI is a type of artificial intelligence technology that can produce various types of content, including text, imagery, audio, and synthetic data.
+
+2. What are some features of Vertex AI? Select three.
+check
+Vertex AI is an open and integrated AI platform.
+Correct! Vertex AI is an open and integrated AI platform that provides data scientists with tools for training, tuning, and deploying ML models. You can use open models in Vertex AI Model Garden leveraging Vertex AI infrastructure.
+check
+Vertex AI provides access to Gemini and other models.
+Correct! Vertex AI provides access to Gemini and other models where you can prompt and test them with text, images, video, or code. From apps, developers can access the models using APIs. The Vertex AI Model Garden contains open models and a variety of first and third party models.
+check
+You can build AI Agents in Vertex AI.
+Correct! With Vertex AI Agent Builder, you can create generative AI agents and applications grounded in your organization’s data.
+
+3. Which statements about Flutter are correct? Select three.
+
+Flutter is a no-code framework for developing apps without writing any code.
+check
+Flutter is a reactive, declarative UI framework.
+Correct! Flutter is a reactive, declarative UI framework, where the developer provides a mapping from the application state to the interface state.
+check
+To develop a Flutter app, you create widgets in the Dart programming language.
+Correct! In Flutter, you create widgets that are represented by immutable classes, and are used to configure a tree of objects. Widgets are the building blocks of a Flutter app's user interface.
+
+With Flutter, you can build apps for multiple platforms from a single codebase.
+ 
+4. Which statements regarding Gemini models are correct? Select two.
+Gemini vision models can process input from image and text prompts.
+Correct! The Gemini 1.0 Pro Vision model is multimodal and can understand input from images, text, and code, and generates text output.
+
+The Gemini 1.5 Pro model supports long context understanding up to the maximum input token limit.
+Correct! This model supports long-context understanding with a 2M token context window. To process a prompt, generative AI models break down text and other data in a prompt into units called tokens. A token can be characters, words, or phrases and depends on the tokenizer used.
