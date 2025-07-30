@@ -1,9 +1,10 @@
 Video: https://youtu.be/vGCQYdRdVdY
 
-Quiz
-
+********************************************
+Quiz 1
 Your score: 100% Passing score: 80%
 Congratulations! You passed this assessment.
+********************************************
 
 1. What are some ways to describe generative AI? Select three.
 check
@@ -32,6 +33,12 @@ Correct! With Vertex AI Agent Builder, you can create generative AI agents and a
 Flutter is a no-code framework for developing apps without writing any code.
 check
 Flutter is a reactive, declarative UI framework.
+
+********************************************
+Quiz 2
+Your score: 100% Passing score: 80%
+Congratulations! You passed this assessment.
+********************************************
 Correct! Flutter is a reactive, declarative UI framework, where the developer provides a mapping from the application state to the interface state.
 check
 To develop a Flutter app, you create widgets in the Dart programming language.
