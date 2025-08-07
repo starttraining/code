@@ -1,0 +1,165 @@
+Task 1. Find the NCAA public dataset in BigQuery
+In this section, you pull in some public data so you can practice running SQL commands in BigQuery.
+
+Click on the + ADD then select Public Datasets:
+Expanded Add Data dropdown menu with Explore public datasets option highlighted
+
+Type ncaa basketball in the search bar and press Enter.
+
+Click on the NCAA Basketball tile, then View Dataset.
+
+Note: A new browser tab opens, you now have a new project called bigquery-public-data added to the Explorer panel, opened to ncaa_basketball
+DatasetInfo
+
+If bigquery-public-data is not present in explorer panel, click on the + ADD then select Star a project by name.
+
+Type bigquery-public-data and click STAR .
+
+Click on the bigquery-public-data > ncaa basketball to view the tables you can explore.
+
+Explorer panel with ncaa_basketball dataset highlighted and various tables listed below the dataset
+
+Click on mbb_games_sr (men's NCAA game results table) and then click the Preview tab to see sample rows of data. Click the Details tab to get metadata about the table.
+
+Click the Details tab to get metadata about the table.
+
+TableInfo
+
+Question: How many games does the dataset contain? How big is the table?
+
+Answer: The table is about 50 MB and there are over 29k games for us to explore.
+
+Question: But how many individual plays can we analyze?
+
+Hint:
+
+Click on the mbb_pbp_sr (play-by-play) dataset.
+ncaa dataset with mbb_pbp_sr table highlighted
+
+Then click Details.
+mbb_pbr_sr_Details
+
+Answer: Over 4 million individual play basketball.
+
+Let’s write some SQL to see what types of plays are there for us to explore.
+
+Task 2. Writing queries
+What types of basketball play events are there?
+Click "+" (Compose New Query) icon.
+
+Copy and paste the below query into the editor:
+
+#standardSQL
+SELECT
+  event_type,
+  COUNT(*) AS event_count
+FROM `bigquery-public-data.ncaa_basketball.mbb_pbp_sr`
+GROUP BY 1
+ORDER BY event_count DESC;
+Copied!
+Now click Run.
+Looking at your results, how many historical shots were TWOPOINTMADE or FREETHROWMISS?
+
+Query results table with columns for Row, event_type, and event_count. Data in rows 4 and 11 are highlighted
+
+Click Check my progress to verify the objective.
+
+Writing queries
+Task 3. Fun queries to run
+Which 5 games featured the most three point shots made? How accurate were all the attempts?
+Click "+" (Compose New Query) icon and add in the below query:
+#standardSQL
+#most three points made
+SELECT
+  scheduled_date,
+  name,
+  market,
+  alias,
+  three_points_att,
+  three_points_made,
+  three_points_pct,
+  opp_name,
+  opp_market,
+  opp_alias,
+  opp_three_points_att,
+  opp_three_points_made,
+  opp_three_points_pct,
+  (three_points_made + opp_three_points_made) AS total_threes
+FROM `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr`
+WHERE season > 2010
+ORDER BY total_threes DESC
+LIMIT 5;
+Copied!
+Click Run.
+Query results table
+
+Wow! The Tigers made over 50% of their three point shots on 11-22-2016.
+ 
+
+Query 1
+Which 5 basketball venues have the highest seating capacity?
+Click "+" (Compose New Query) icon and add the below query:
+#standardSQL
+SELECT
+  venue_name, venue_capacity, venue_city, venue_state
+FROM `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr`
+GROUP BY 1,2,3,4
+ORDER BY venue_capacity DESC
+LIMIT 5;
+Copied!
+Click Run.
+Query results table
+
+Imagine taking a shot with 80,000 people watching you!
+ 
+
+Query 2
+Which teams played in the highest scoring game since 2010?
+Click "+" (Compose New Query) icon and add the below query:
+#standardSQL
+#highest scoring game of all time
+SELECT
+  scheduled_date,
+  name,
+  market,
+  alias,
+  points_game AS team_points,
+  opp_name,
+  opp_market,
+  opp_alias,
+  opp_points_game AS opposing_team_points,
+  points_game + opp_points_game AS point_total
+FROM `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr`
+WHERE season > 2010
+ORDER BY point_total DESC
+LIMIT 5;
+Copied!
+Click Run.
+Query results table
+
+The Bulldogs and Terriers played in a game that scored 258 total points!
+ 
+
+Query 3
+Since 2015, what was the biggest difference in final score for a National Championship?
+Click "+" (Compose New Query) icon and add the below query:
+#standardSQL
+#biggest point difference in a championship game
+SELECT
+  scheduled_date,
+  name,
+  market,
+  alias,
+  points_game AS team_points,
+  opp_name,
+  opp_market,
+  opp_alias,
+  opp_points_game AS opposing_team_points,
+  ABS(points_game - opp_points_game) AS point_difference
+FROM `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr`
+WHERE season > 2015 AND tournament_type = 'National Championship'
+ORDER BY point_difference DESC
+LIMIT 5;
+ 
+ 
+ 
