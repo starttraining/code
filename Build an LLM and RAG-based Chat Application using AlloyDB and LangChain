@@ -110,7 +110,7 @@ export CLIENT_ID=450....apps.googleusercontent.com
 
 7.5 gcloud compute ssh instance-1 --zone=ZONE -- -L 8080:localhost:8081
 
-
-
+Resources:
+https://github.com/GoogleCloudPlatform/genai-databases-retrieval-app/blob/main/README.md
 
 
