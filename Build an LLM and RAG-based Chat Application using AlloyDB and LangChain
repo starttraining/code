@@ -1,0 +1,114 @@
+#Task 1. Initialize the Environment
+
+1.1 gcloud compute ssh instance-1 --zone=ZONE
+
+1.2 Install the software running command inside the VM:
+
+sudo apt-get update
+sudo apt-get install --yes postgresql-client 
+
+##Connect to the Instance
+
+export PGPASSWORD=PG_PASSWORD
+
+export PROJECT_ID=$(gcloud config get-value project)
+export REGION=REGION
+export ADBCLUSTER=CLUSTER
+export INSTANCE_IP=$(gcloud alloydb instances describe $ADBCLUSTER-pr --cluster=$ADBCLUSTER --region=$REGION --format="value(ipAddress)")
+psql "host=$INSTANCE_IP user=postgres sslmode=require" 
+
+1.3 Exit from the psql session keeping the SSH connection up:
+
+exit
+
+#Task 2. Initialize the database
+
+2.1 In the VM session execute:
+
+psql "host=$INSTANCE_IP user=postgres" -c "CREATE DATABASE assistantdemo"  
+
+2.2 Enable pgVector extension:
+
+psql "host=$INSTANCE_IP user=postgres dbname=assistantdemo" -c "CREATE EXTENSION vector"   
+Copied!
+
+#Task 3. Install Python
+next, you are going to use prepared Python scripts from GitHub repository, but before doing that, you need to install the required software.
+
+3.1 In the VM execute:
+sudo apt install -y python3.11-venv git
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+
+#Task 4. Populate Database
+
+4.1 git clone https://github.com/GoogleCloudPlatform/genai-databases-retrieval-app.git
+
+4.2 Prepare configuration file. In the VM execute:
+
+cd genai-databases-retrieval-app/retrieval_service
+cp example-config.yml config.yml
+sed -i s/127.0.0.1/$INSTANCE_IP/g config.yml
+sed -i s/my-password/$PGPASSWORD/g config.yml
+sed -i s/my_database/assistantdemo/g config.yml
+sed -i s/my-user/postgres/g config.yml
+cat config.yml
+
+4.3 Now populate database with the sample dataset. In the VM execute:
+
+pip install -r requirements.txt
+python run_database_init.py
+
+#Task 5. Deploy the Retrieval Service to Cloud Run
+
+5.1 Create Service Account
+
+In the new Cloud Shell tab execute:
+
+export PROJECT_ID=$(gcloud config get-value project)
+gcloud iam service-accounts create retrieval-identity
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:retrieval-identity@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/aiplatform.user"
+
+#Task 6. Deploy the Retrieval Service
+
+6.1 In the VM SSH session execute:
+
+cd ~/genai-databases-retrieval-app
+gcloud alpha run deploy retrieval-service \
+    --source=./retrieval_service/\
+    --no-allow-unauthenticated \
+    --service-account retrieval-identity \
+    --region us-central1 \
+    --network=default \
+    --quiet
+
+6.2 Verify The Service
+
+curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" $(gcloud  run services list --filter="(retrieval-service)" --format="value(URL)")
+
+#Task 7. Deploy sample application
+
+7.1 Prepare the environment, In the VM SSH session execute:
+
+cd ~/genai-databases-retrieval-app/llm_demo
+pip install -r requirements.txt
+
+7.2 Run Assistant application, in the VM SSH session execute:
+
+export BASE_URL=$(gcloud  run services list --filter="(retrieval-service)" --format="value(URL)")
+
+7.3 Prepare Client ID
+
+export CLIENT_ID=450....apps.googleusercontent.com
+
+7.4 python run_app.py
+
+7.5 gcloud compute ssh instance-1 --zone=ZONE -- -L 8080:localhost:8081
+
+
+
+
+
