@@ -1,6 +1,6 @@
 Video https://youtu.be/TS1TAP-VFtg
 
-#Task 1. Initialize the Environment
+# Task 1. Initialize the Environment
 
 1.1 gcloud compute ssh instance-1 --zone=ZONE
 
@@ -9,7 +9,7 @@ Video https://youtu.be/TS1TAP-VFtg
 sudo apt-get update
 sudo apt-get install --yes postgresql-client 
 
-##Connect to the Instance
+## Connect to the Instance
 
 export PGPASSWORD=PG_PASSWORD
 
