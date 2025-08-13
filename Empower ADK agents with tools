@@ -1,0 +1,332 @@
+## Task 1. Install ADK and set up your environment
+Note: Using an Incognito browser window is recommended for most Qwiklabs to avoid confusion between your Qwiklabs student account and other accounts logged into Google Cloud. If you are using Chrome, the easiest way to accomplish this is to close any Incognito windows, then right click on the **Open Google Cloud console** button at the top of this lab and select **Open link in Incognito window**.
+Enable Vertex AI recommended APIs
+In this lab environment, the Vertex AI API has been enabled for you. If you were to follow these steps in your own project, you could enable it by navigating to Vertex AI and following the prompt to enable it.
+Prepare a Cloud Shell Editor tab
+With your Google Cloud console window selected, open Cloud Shell by pressing the G key and then the S key on your keyboard. Alternatively, you can click the Activate Cloud Shell button (Activate Cloud Shell) in the upper right of the Cloud console.
+
+Click Continue.
+
+When prompted to authorize Cloud Shell, click Authorize.
+
+In the upper right corner of the Cloud Shell Terminal panel, click the Open in new window button Open in new window button.
+
+In the Cloud Shell Terminal, enter the following to open the Cloud Shell Editor to your home directory:
+
+cloudshell workspace ~
+Copied!
+Close any additional tutorial or Gemini panels that appear on the right side of the screen to save more of your window for your code editor.
+Throughout the rest of this lab, you can work in this window as your IDE with the Cloud Shell Editor and Cloud Shell Terminal.
+Download and install ADK and code samples for this lab
+Update your PATH environment variable and install ADK by running the following commands in the Cloud Shell Terminal. Note: You will specify the version to ensure that the version of ADK that you install corresponds to the version used in this lab:
+
+export PATH=$PATH:"/home/${USER}/.local/bin"
+python3 -m pip install google-adk[extensions]==1.8.0
+Copied!
+Paste the following commands into the Cloud Shell Terminal to copy a file from a Cloud Storage bucket, and unzip it, creating a project directory with code for this lab:
+
+gcloud storage cp gs://YOUR_GCP_PROJECT_ID-bucket/adk_tools.zip .
+unzip adk_tools.zip
+Copied!
+Install additional lab requirements with:
+
+python3 -m pip install -r adk_tools/requirements.txt
+Copied!
+Click Check my progress to verify the objective.
+Install ADK and set up your environment.
+
+## Task 2. Create a data store that will be used to ground responses on your own data
+
+In a later task, you will use the Google-provided Vertex AI Search tool to ground responses on your own data in an AI Applications data store. Since this data store needs a little while to ingest data, you will set it up now, then use it to ground responses on your data in a later task.
+
+Example documents have been uploaded to Cloud Storage for you. They relate to the fictional discovery of a new planet named Persephone. (A fictional planet is used in this case so that the model cannot have learned anything about this planet during its training.)
+
+In your browser tab still showing the Cloud Console, navigate to AI Applications by searching for it at the top of the console.
+Select the terms and conditions checkbox and click Continue and Activate the API.
+From the left-hand navigation menu, select Data Stores.
+Select Create Data Store.
+Find the Cloud Storage card and click Select on it.
+Select Unstructured documents (PDF, HTML, TXT and more)
+For a GCS path, enter YOUR_GCP_PROJECT_ID-bucket/planet-search-docs.
+Click Continue.
+Keep the location set to global.
+For a data store name, enter Planet Search.
+Click Create.
+Once your data store is created, copy its ID which you will find in the Data Stores table. Save it in a text document as you will need it later.
+Click Check my progress to verify the objective.
+Create a data store.
+
+Third-Party Tools
+ADK allows you to use tools available from third-party AI libraries like LangChain and CrewAI.
+
+## Task 3. Use a LangChain Tool
+The LangChain community has created a large number of tool integrations to access many sources of data, integrate with various web products, and accomplish many things. Using community tools within ADK can save you rewriting a tool that someone has already created.
+
+Back in your browser tab displaying the Cloud Shell Editor, use the file explorer on the left-hand side to navigate to the directory adk_tools/langchain_tool_agent.
+
+Write a .env file to provide authentication details for this agent directory by running the following in the Cloud Shell Terminal:
+
+cd ~/adk_tools
+cat << EOF > langchain_tool_agent/.env
+GOOGLE_GENAI_USE_VERTEXAI=TRUE
+GOOGLE_CLOUD_PROJECT=YOUR_GCP_PROJECT_ID
+GOOGLE_CLOUD_LOCATION=GCP_LOCATION
+MODEL=gemini-2.0-flash-001
+EOF
+Copied!
+Copy the .env file to the other agent directories you will use in this lab by running the following:
+
+cp langchain_tool_agent/.env crewai_tool_agent/.env
+cp langchain_tool_agent/.env function_tool_agent/.env
+cp langchain_tool_agent/.env vertexai_search_tool_agent/.env
+Copied!
+Click on the agent.py file in the langchain_tool_agent directory.
+
+Notice the import of the LangchainTool class. This is a wrapper class that allows you to use LangChain tools within Agent Development Kit.
+
+Add the following code where indicated in the agent.py file to add the LangChain Wikipedia tool to your agent. This will allow your agent to search for information on Wikipedia:
+
+    tools = [
+        # Use the LangchainTool wrapper...
+        LangchainTool(
+            # to pass in a LangChain tool.
+            # In this case, the WikipediaQueryRun tool,
+            # which requires the WikipediaAPIWrapper as
+            # part of the tool.
+            tool=WikipediaQueryRun(
+              api_wrapper=WikipediaAPIWrapper()
+            )
+        )
+    ]
+Copied!
+Save the file.
+
+In the Cloud Shell Terminal, from the adk_tools project directory, launch the Agent Development Kit Dev UI with the following commands:
+
+adk web
+Copied!
+Output
+
+INFO:     Started server process [2434]
+INFO:     Waiting for application startup.
++-------------------------------------------------------+
+| ADK Web Server started                                |
+|                                                       |
+| For local testing, access at http://localhost:8000.   |
++-------------------------------------------------------+
+
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit) 
+To view the web interface in a new tab, click the http://127.0.0.1:8000 link in the Terminal output.
+
+A new browser tab will open with the ADK Dev UI.
+
+From the Select an agent dropdown on the left, select the langchain_tool_agent from the dropdown.
+
+Query the agent with:
+
+Who was Grace Hopper?
+Copied!
+Output:
+
+Langchain Wikipedia Tool
+
+Click the agent icon next to the agent's chat bubble indicating the use of the wikipedia tool.
+
+Notice that the content includes a functionCall with the query to Wikipedia.
+
+At the top of the tab, click the forward button to move to the next event.
+
+On the Request tab, you can see the result retrieved from Wikipedia used to generate the model's response.
+
+When you are finished asking questions of this agent, close the dev UI browser tab.
+
+In the Terminal, press CTRL + C to stop the server.
+
+Click Check my progress to verify the objective.
+Use a LangChain Tool.
+
+## Task 4. Use a CrewAI Tool
+You can similarly use CrewAI Tools, using a CrewaiTool wrapper.
+
+To do so, using the Cloud Shell Editor file explorer, navigate to the directory adk_tools/crewai_tool_agent.
+
+Click on the agent.py file in the crewai_tool_agent directory.
+
+Notice the import of the CrewaiTool class from ADK and the ScrapeWebsiteTool from crewai_tools.
+
+Add the following code where indicated in the agent.py file to add the CrewAI Scrape Website tool to your agent, along with a name and description:
+
+    tools = [
+        CrewaiTool(
+            name="scrape_apnews",
+            description=(
+                """Scrapes the latest news content from
+                the Associated Press (AP) News website."""
+            ),
+            tool=ScrapeWebsiteTool("https://apnews.com/")
+        )
+    ]
+Copied!
+Save the file.
+
+You'll run this agent using the command line interface to be familiar with it as a convenient way to test an agent quickly. In the Cloud Shell Terminal, from the adk_tools project directory, launch the agent with the ADK command line UI with:
+
+adk run crewai_tool_agent
+Copied!
+While the agent loads, it may display some warnings. You can ignore these. When you are presented the user: prompt, enter:
+
+Get 10 of the latest headlines from AP News.
+Copied!
+Output:
+
+Using Tool: Read website content
+[crewai_tool_agent]: Here are the latest headlines from AP News:
+...
+Notice that the command line interface also indicates to you when a tool is being used.
+
+In the Terminal, respond to the next user: prompt with exit to exit the command line interface.
+
+Scroll back in your Terminal history to find where you ran adk run crewai_tool_agent, and notice that the command line interface provided you a log file to tail. Copy and run that command to view more details of the execution:
+
+tail -F /tmp/agents_log/agent.latest.log
+Copied!
+Press CTRL + C to stop tailing the log file and return to the command prompt.
+
+Click Check my progress to verify the objective.
+Use a CrewAI Tool.
+
+## Task 5. Use a function as a custom tool
+When pre-built tools don't fully meet specific requirements, you can create your own tools. This allows for tailored functionality, such as connecting to proprietary databases or implementing unique algorithms.
+
+The most straightforward way to create a new tool is to write a standard Python function with a docstring written in a standard format and pass it to your model as a tool. This approach offers flexibility and quick integration.
+
+When writing a function to be used as a tool, there are a few important things to keep in mind:
+
+Parameters: Your function can accept any number of parameters, each of which can be of any JSON-serializable type (e.g., string, integer, list, dictionary). It's important to avoid setting default values for parameters, as the large language model (LLM) does not currently support interpreting them.
+Return type: The preferred return type for a Python Function Tool is a dictionary. This allows you to structure the response with key-value pairs, providing context and clarity to the LLM. For example, instead of returning a numeric error code, return a dictionary with an "error_message" key containing a human-readable explanation. As a best practice, include a "status" key in your return dictionary to indicate the overall outcome (e.g., "success", "error", "pending"), providing the LLM with a clear signal about the operation's state.
+Docstring: The docstring of your function serves as the tool's description and is sent to the LLM. Therefore, a well-written and comprehensive docstring is crucial for the LLM to understand how to use the tool effectively. Clearly explain the purpose of the function, the meaning of its parameters, and the expected return values.
+Define a function and use it as a tool by completing the following steps:
+
+Using the Cloud Shell Editor file explorer, navigate to the directory adk_tools/function_tool_agent.
+
+In the function_tool_agent directory, click on the agent.py file.
+
+Notice that the functions get_date() and write_journal_entry() have docstrings formatted properly for an ADK agent to know when and how to use them. They include:
+
+A clear description of what each function does
+an Args: section describing the function's input parameters with JSON-serializable types
+a Returns: section describing what the function returns, with the preferred response type of a dict
+To pass the function to your agent to use as a tool, add the following code where indicated in the agent.py file:
+
+    tools=[get_date, write_journal_entry]
+Copied!
+Save the file.
+
+You will run this agent using the dev UI to see how its tools allow you to easily visualize tool requests and responses. In the Cloud Shell Terminal, from the adk_tools project directory, run the dev UI again with the following command (if the server is still running from before, stop the running server first with CTRL+C, then run the following to start it again):
+
+adk web
+Copied!
+Click the http://127.0.0.1:8000 link in the Terminal output.
+
+A new browser tab will open with the ADK Dev UI.
+
+From the Select an agent dropdown on the left, select the function_tool_agent.
+
+Start a conversation with the agent with:
+
+hello
+Copied!
+The agent should prompt you about your day. Respond with a sentence about how your day is going, and it will write a journal entry for you.
+
+Example Output:
+
+Journaling Tool Function
+
+Notice that your agent shows buttons for your custom tool's request and the response. You can click on each to see more information about each of these events.
+
+Close the dev UI tab.
+
+In the Cloud Shell Editor, you can find your dated journal entry file in the adk_tools directory. (You may want to use the Cloud Shell Editor's menu to enable View > Word Wrap to see the full text without lots of horizontal scrolling.)
+
+To stop the server, click on the Terminal panel and press CTRL + C.
+
+Best practices for writing functions to be used as tools include
+Fewer Parameters are Better: Minimize the number of parameters to reduce complexity.
+Use Simple Data Types: Favor primitive data types like str and int over custom classes when possible.
+Use Meaningful Names: The function's name and parameter names significantly influence how the LLM interprets and utilizes the tool. Choose names that clearly reflect the function's purpose and the meaning of its inputs.
+Break Down Complex Functions: Instead of a single update_profile(profile: Profile) function, create separate functions like update_name(name: str), update_age(age: int), etc.
+Return status: Include a "status" key in your return dictionary to indicate the overall outcome (e.g., "success", "error", "pending") to provide the LLM a clear signal about the operation's state.
+Click Check my progress to verify the objective.
+Use a function as a custom tool.
+
+## Task 6. Use Vertex AI Search as a tool to ground on your own data
+In this task, you will discover how easy it is to deploy a RAG application using an Agent Development Kit agent with the built-in Vertex AI Search tool from Google and the AI Applications data store you created earlier.
+
+Return to your Cloud Shell Editor tab and select the adk_tools/vertexai_search_tool_agent directory.
+
+Click on the agent.py file in the vertexai_search_tool_agent directory.
+
+Notice the import of the VertexAiSearchTool class:
+
+from google.adk.tools import VertexAiSearchTool 
+Copied!
+Update the code where the VertexAiSearchTool is instantiated. In the path being passed to data_store_id, update YOUR_PROJECT_ID to YOUR_GCP_PROJECT_ID and update YOUR_DATA_STORE_ID to the data store ID you copied earlier.
+
+Add the following line where indicated in the agent definition to provide the agent the tool:
+
+   tools=[vertexai_search_tool]
+Copied!
+Save the agents.py file.
+You can confirm your data store is ready for use by selecting the data store's name on the AI Applications > Data Stores page in the console.
+
+The ACTIVITY and DOCUMENTS tabs provide statuses on the import and indexing of your documents. When the ACTIVITY tab reports "Import completed", your data store should be ready to query.
+
+In the Cloud Shell Terminal, from the adk_tools project directory, launch the command line interface with the following command:
+
+adk web
+Copied!
+Note: If you did not shut down your previous adk web session, the default port of 8000 will be blocked, but you can launch the Dev UI with a new port by using adk web --port 8001, for example.
+Click the http://127.0.0.1:8000 to open the ADK Dev UI.
+
+From the Select an agent dropdown on the left, select the vertexai_search_tool_agent and toggle on the Token Streaming option in the upper right.
+
+Query the agent about the fictional planet described in your Cloud Storage documents with:
+
+Is the new planet Persephone suitable for habitation?
+Copied!
+Example output (yours may be a little different)
+
+Based on the "Persephone Survey: What we Know So Far" document, Persephone exhibits several characteristics that suggest it could be habitable:
+
+- Location: It orbits within the habitable zone of its star.
+- Temperature: The average surface temperature is estimated to be around 18°C (64°F).
+...
+Feel free to ask the agent more questions about this new planet and the conference where its discovery will be announced. When you are satisfied, close the dev UI tab.
+When you are finished asking questions of this agent, close the browser tab, select the Cloud Shell Terminal window where the server is running, and press CTRL + C to stop the server.
+Click Check my progress to verify the objective.
+Use a Google-provided tool.
+
+Even More Types of Tools!
+The following tool types are good for you to know about, but you will not implement them in this lab.
+
+The LongRunningFunctionTool Class
+This tool is a subclass of FunctionTool. It's designed for tasks that require a significant amount of processing time that should be called without blocking the agent's execution.
+
+When using a LongRunningFunctionTool, your Python function can initiate the long-running operation and optionally return an intermediate result to keep the model and user informed about the progress (e.g., status updates or estimated completion time). The agent can then continue with other tasks.
+
+An example is a human-in-the-loop scenario where the agent needs human approval before proceeding with a task.
+
+Agent-as-a-Tool
+This feature allows you to leverage the capabilities of other agents within your system by calling them as tools, effectively delegating responsibility to a 'specialist' agent. This is conceptually similar to creating a Python function that calls another agent with function arguments and uses the agent's response as the function's return value.
+
+Application Integration workflows as tools
+With Application Integration, you can use a drag-and-drop interface in the Google Cloud Console to build tools, data connections, and data transformations using Integration Connector’s 100+ pre-built connectors for Google Cloud products and third-party systems like Salesforce, ServiceNow, JIRA, SAP, and more. You can then use an ADK ApplicationIntegrationToolset to allow your agents to connect to those sources or call your workflows.
+
+Model Context Protocol (MCP) Tools
+Model Context Protocol (MCP) is an open standard designed to standardize how Large Language Models (LLMs) like Gemini and Claude communicate with external applications, data sources, and tools. ADK helps you both use and consume MCP tools in your agents, whether you're trying to build a tool to call an MCP service, or exposing an MCP server for other developers or agents to interact with your tools.
+
+Refer to the MCP Tools documentation for code samples and design patterns that help you use ADK together with MCP servers, including:
+
+Using Existing MCP Servers within ADK: An ADK agent can act as an MCP client and use tools provided by external MCP servers.
+Exposing ADK Tools via an MCP Server: How to build an MCP server that wraps ADK tools, making them accessible to any MCP client.
