@@ -1,0 +1,205 @@
+Task 1. Install ADK and set up your environment
+
+Prepare a Cloud Shell Editor tab
+With your Google Cloud console window selected, open Cloud Shell by pressing the G key and then the S key on your keyboard. Alternatively, you can click the Activate Cloud Shell button (Activate Cloud Shell) in the upper right of the Cloud console.
+
+Click Continue.
+
+When prompted to authorize Cloud Shell, click Authorize.
+
+In the upper right corner of the Cloud Shell Terminal panel, click the Open in new window button Open in new window button.
+
+In the Cloud Shell Terminal, enter the following to open the Cloud Shell Editor to your home directory:
+
+cloudshell workspace ~
+Copied!
+Close any additional tutorial or Gemini panels that appear on the right side of the screen to save more of your window for your code editor.
+Throughout the rest of this lab, you can work in this window as your IDE with the Cloud Shell Editor and Cloud Shell Terminal.
+Download and install ADK and code samples for this lab
+Update your PATH environment variable and install ADK by running the following commands in the Cloud Shell Terminal.
+
+export PATH=$PATH:"/home/${USER}/.local/bin"
+python3 -m pip install google-adk
+Copied!
+Paste the following commands into the Cloud Shell Terminal to copy a file from a Cloud Storage bucket, and unzip it, creating a project directory with code for this lab:
+
+gcloud storage cp -r gs://YOUR_GCP_PROJECT_ID-bucket/adk_to_agent_engine .
+Copied!
+Install additional lab requirements with:
+
+python3 -m pip install -r adk_to_agent_engine/requirements.txt
+Copied!
+Run the following commands to create a .env file in the adk_to_agent_engine directory. (Note: To view a hidden file beginning with a period, you can use the Cloud Shell Editor menus to enable View > Toggle Hidden Files):
+
+cd ~/adk_to_agent_engine
+cat << EOF > .env
+GOOGLE_GENAI_USE_VERTEXAI=TRUE
+GOOGLE_CLOUD_PROJECT=YOUR_GCP_PROJECT_ID
+GOOGLE_CLOUD_LOCATION=GCP_LOCATION
+MODEL=gemini-2.5-flash
+EOF
+Copied!
+Copy the .env file to the agent directory to provide your agent necessary authentication configurations once it is deployed:
+
+cp .env transcript_summarization_agent/.env
+Copied!
+Task 2. Deploy to Agent Engine using the command line deploy method
+ADK's command line interface provides shortcuts to deploy agents to Agent Engine, Cloud Run, and Google Kubernetes Engine (GKE). You can use the following base commands to deploy to each of these services:
+
+adk deploy agent_engine (with its command line args described under the @deploy.command("agent_engine") decorator)
+adk deploy cloud_run (with its command line args described under the @deploy.command("cloud_run") decorator)
+adk deploy gke (with its command line args described under the @deploy.command("gke") decorator)
+The adk deploy agent_engine command wraps your agent in a reasoning_engines.AdkApp class and deploys this app to Agent Engine's managed runtime, ready to receive agentic queries.
+
+When an AdkApp is deployed to Agent Engine, it automatically uses a VertexAiSessionService for persistent, managed session state. This provides multi-turn conversational memory without any additional configuration. For local testing, the application defaults to a temporary, InMemorySessionService.
+
+To deploy an Agent Engine app using adk deploy agent_engine, complete the following steps:
+
+In the adk_to_agent_engine/transcript_summarization_agent directory, click on the agent.py file to review the instructions of this simple summarization agent.
+
+To deploy an agent, you must provide its requirements. In Cloud Shell Editor, right-click on the transcript_summarization_agent directory. (You may need to click Allow to enable the right-click menu.)
+
+Select New File...
+
+Name the file like a standard Python requirements file: requirements.txt
+
+Paste the following into the file:
+
+google-cloud-aiplatform[adk,agent_engines]==1.110.0
+Copied!
+Save the file.
+
+In the Cloud Shell Terminal, run the deploy command:
+
+adk deploy agent_engine transcript_summarization_agent \
+--display_name "Transcript Summarizer" \
+--staging_bucket gs://YOUR_GCP_PROJECT_ID-bucket
+Copied!
+You can follow the status from the log file that will be linked from the command's output. During deployment, the following steps are occurring:
+
+A bundle of artifacts is generated locally, comprising:
+*.pkl: a pickle file corresponding to local_agent.
+requirements.txt: this file from the agent folder defining package requirements.
+dependencies.tar.gz: a tar file containing any extra packages.
+The bundle is uploaded to Cloud Storage (using a defined directory if specified) for staging the artifacts.
+The Cloud Storage URIs for the respective artifacts are specified in the PackageSpec.
+The Vertex AI Agent Engine service receives the request and builds containers and spins up HTTP servers on the backend.
+Note: Deployment should take about 10 minutes, but you can continue with this lab while it deploys.
+
+Quiz While Your Agent is Deploying
+Each of the adk deploy ... commands requires certain arguments to be set. For the most up-to-date arguments, click the linked commands in the list at the top of this task and look for the arguments marked as "Required".
+
+Some required arguments, like --project and --region from the adk deploy agent_engine deployment can load their values from the agent's .env file if present.
+
+Answer the following questions based on the arguments for adk deploy agent_engine:
+
+
+The `--agent_engine_id` argument allows you to update an existing Agent Engine instance.
+True
+False
+
+The `--trace_to_cloud` argument has a default value of True.
+True
+False
+
+Which of the following is true about the `--adk_app` argument?
+Defaults to use your agent.py file.
+Is required.
+Accepts a filename to define an ADK app.
+Creates app files for you to edit.
+
+Highlights from Expected Output:
+
+Copying agent source code...
+Copying agent source code complete.
+Initializing Vertex AI...
+[...]
+Creating AgentEngine
+Create AgentEngine backing LRO: projects/430282503153/locations/us-central1/reasoningEngines/2902138951282196480/operations/2777364189918789632
+View progress and logs at https://console.cloud.google.com/logs/query?project=qwiklabs-gcp-04-f71a2270bd79
+AgentEngine created. Resource name: projects/430282503153/locations/us-central1/reasoningEngines/2902138951282196480
+To use this AgentEngine in another session:
+agent_engine = vertexai.agent_engines.get('projects/430282503153/locations/us-central1/reasoningEngines/2902138951282196480')
+Cleaning up the temp folder: /tmp/agent_engine_deploy_src/20250813_175223
+Click Check my progress to verify the objective.
+Deploy your agent.
+
+Task 3. Get and query an agent deployed to Agent Engine
+To query the agent, you must first grant it the authorization to call models via Vertex AI.
+
+To see the service agent and its assigned role, navigate to IAM in the console.
+
+Click the checkbox to Include Google-provided role grants.
+
+Find the AI Platform Reasoning Engine Service Agent (service-PROJECT_NUMBER@gcp-sa-aiplatform-re.iam.gserviceaccount.com), and click the edit pencil icon in this service agent's row.
+
+Click + Add another role.
+
+In the Select a role field, enter Vertex AI User. If you deploy an agent that uses tools to access other data, you would grant access to those systems to this service agent as well.
+
+Save your changes.
+
+Back in the Cloud Shell Editor, within the adk_to_agent_engine directory, open the file query_agent_engine.py.
+
+Review the code and comments to notice what it is doing.
+
+
+What does the code in this file do? Select all that apply.
+
+Establish a logging client
+
+Create a Cloud Storage client
+
+Initialize Vertex AI
+
+Load Agent Engine apps, filtering by display name
+
+Create a session
+
+Use Gemini to generate a new transcript
+
+Query the summarizer agent
+
+Review the transcript passed to the agent, so that you can evaluate if it's generating an adequate summary.
+
+In the Cloud Shell Terminal, run the file from the adk_to_agent_engine directory with:
+
+cd ~/adk_to_agent_engine/transcript_summarization_agent
+python3 query_agent_engine.py
+Copied!
+Example output (yours results may be a little different):
+
+[remote response] The user wants to buy a boat, and after being asked about the size, inquires how much boat $50,000 will purchase. The Virtual Agent responds that $50,000 will get a "very nice boat," to which the user agrees to proceed.
+Click Check my progress to verify the objective.
+Query an agent.
+
+Task 4. View and delete agents deployed to Agent Engine
+When your agent has completed its deployment, return to a browser tab showing the Cloud Console and navigate to Agent Engine by searching for it and selecting it at the top of the Console.
+
+In the Region dropdown, make sure your location for this lab (GCP_LOCATION) is selected.
+
+You will see your deployed agent's display name. Click on it to enter its monitoring dashboard.
+
+Notice both the Metrics and Session tabs that will each give you insights into how your agent is being used.
+
+When you are ready to delete your agent, select Deployment details from the top of its monitoring dashboard.
+
+Back in your browser tab running the Cloud Shell Terminal, paste the following command, but don't run it yet:
+
+cd ~/adk_to_agent_engine
+python3 agent_engine_utils.py delete REPLACE_WITH_AE_ID
+Copied!
+From the Agent Engine Deployment info panel, copy the Name field, which will have a format like: projects/qwiklabs-gcp-02-76ce2eed15a5/locations/us-central1/reasoningEngines/1467742469964693504.
+
+Return to the Cloud Shell Terminal and replace the end of the command REPLACE_WITH_AE_ID with the resource name you've copied.
+
+Press Return to run the deletion command.
+
+Example Output:
+
+Deleting AgentEngine resource: projects/1029886909158/locations/us-central1/reasoningEngines/1456078850617245696
+Delete AgentEngine backing LRO: projects/1029886909158/locations/us-central1/operations/2884525977596067840
+AgentEngine resource deleted: projects/1029886909158/locations/us-central1/reasoningEngines/1456078850617245696
+In the Cloud Console, return to the Agent Engine dashboard to see that the agent has been deleted.
+
+To view the simple Python SDK code to list and delete agents, view the contents of the file adk_to_agent_engine/agent_engine_utils.py.
