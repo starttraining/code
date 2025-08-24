@@ -3,23 +3,11 @@ Video: https://youtu.be/plvenvAF_g8
 File: https://github.com/starttraining/code/blob/main/adk_to_agent_engine.zip
 
 Task 1. Install ADK and set up your environment
-
-Prepare a Cloud Shell Editor tab
-With your Google Cloud console window selected, open Cloud Shell by pressing the G key and then the S key on your keyboard. Alternatively, you can click the Activate Cloud Shell button (Activate Cloud Shell) in the upper right of the Cloud console.
-
-Click Continue.
-
-When prompted to authorize Cloud Shell, click Authorize.
-
-In the upper right corner of the Cloud Shell Terminal panel, click the Open in new window button Open in new window button.
-
+ 
 In the Cloud Shell Terminal, enter the following to open the Cloud Shell Editor to your home directory:
 
 cloudshell workspace ~
-Copied!
-Close any additional tutorial or Gemini panels that appear on the right side of the screen to save more of your window for your code editor.
-Throughout the rest of this lab, you can work in this window as your IDE with the Cloud Shell Editor and Cloud Shell Terminal.
-Download and install ADK and code samples for this lab
+ 
 Update your PATH environment variable and install ADK by running the following commands in the Cloud Shell Terminal.
 
 export PATH=$PATH:"/home/${USER}/.local/bin"
@@ -42,7 +30,7 @@ GOOGLE_CLOUD_PROJECT=YOUR_GCP_PROJECT_ID
 GOOGLE_CLOUD_LOCATION=GCP_LOCATION
 MODEL=gemini-2.5-flash
 EOF
-Copied!
+ 
 Copy the .env file to the agent directory to provide your agent necessary authentication configurations once it is deployed:
 
 cp .env transcript_summarization_agent/.env
