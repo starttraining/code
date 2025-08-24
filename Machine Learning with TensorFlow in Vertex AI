@@ -1,0 +1,28 @@
+🚀 Overview: Vertex AI Workbench + TensorFlow
+🎯 What you’ll do in this lab:
+💻 Create a Vertex AI Workbench instance
+🧠 Develop a TensorFlow model in Jupyter Notebook
+📊 Build an input data pipeline
+📡 Deploy model to an endpoint
+🔮 Get predictions from the model
+
+🔹 TensorFlow
+⚡ End-to-end open-source ML platform
+🧩 Rich ecosystem of tools & libraries
+👩‍🔬 Supports researchers + developers
+🚀 Easy model building & deployment
+
+🔹 Vertex AI
+🔗 Combines AutoML & AI Platform into one
+📦 Unified API + client library + UI
+⚙️ Supports AutoML training & custom training
+
+🔹 Vertex AI Workbench
+📝 Notebook-based ML workflows
+🔌 Deep integration with GCP services (BigQuery, Dataflow, Dataproc, Dataplex)
+🔍 Data analysis & model experimentation
+📦 Model deployment & lifecycle management (MLOps)
+🛠️ One environment for the entire data science workflow
+
+📚 This lab uses code samples from
+Data Science on the Google Cloud Platform (2nd Edition, O’Reilly Media)
