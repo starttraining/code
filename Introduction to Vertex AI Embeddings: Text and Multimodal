@@ -1,0 +1,72 @@
+Video: https://youtu.be/As8v57sQx8Q
+
+
+In this lab, you explore:
+
+Vertex AI Text Embeddings API.
+Vertex AI Multimodal Embeddings API (Images & Video).
+Building simple search with e-commerce data
+Find product based on text query.
+Find product based on image.
+Find Video based on video.
+
+Task 1. Open the notebook in Vertex AI Workbench
+In the Google Cloud console, on the Navigation menu (Navigation menu icon), click Vertex AI > Workbench.
+
+Find the Workbench instance name instance and click on the Open JupyterLab button.
+
+The JupyterLab interface for your Workbench instance opens in a new browser tab.
+
+Note: If you do not see notebooks in JupyterLab, please follow these additional steps to reset the instance:
+1. Close the browser tab for JupyterLab, and return to the Workbench home page.
+
+2. Select the checkbox next to the instance name, and click Reset.
+
+3. After the Open JupyterLab button is enabled again, wait one minute, and then click Open JupyterLab.
+
+Task 2. Set up the notebook
+Open the notebook name file.
+
+In the Select Kernel dialog, choose Python 3 from the list of available kernels.
+
+Run through the Getting Started and the Import libraries sections of the notebook.
+
+For Project ID, use Project ID, and for Location, use Region.
+Note: You can skip any notebook cells that are noted Colab only. If you experience a 429 response from any of the notebook cell executions, wait 1 minute before running the cell again to proceed.
+Task 3. Generate Text Embeddings
+In this section, you explore the Text Embeddings API of Gemini.
+
+Run through the Generate Text Embeddings section of the notebook.
+Click Check my progress to verify the objective.
+Get the length and first five elements of the text embedding.
+
+Click Check my progress to verify the objective.
+Compare similarity of text examples using cosine similarity.
+
+Task 4. Generate Image Embeddings
+In this section, you explore the Multimodal Embedding API of Gemini.
+
+Run through the Generate Image Embeddings section of the notebook.
+Click Check my progress to verify the objective.
+Generate Image Embeddings.
+
+Task 5. Find product based on text query
+Run through the Find product based on text query section of the notebook.
+Click Check my progress to verify the objective.
+Find product based on text query.
+
+Task 6. Generate Video Embeddings
+Run through the Generate Video Embeddings section of the notebook.
+Click Check my progress to verify the objective.
+Generate Video Embeddings.
+
+Task 7. Find videos based on text search query
+Run through the Find videos based on text search query section of the notebook.
+Click Check my progress to verify the objective.
+Find videos based on text search query.
+
+Task 8. Find Similar videos
+Run through the Find Similar videos section of the notebook.
+Click Check my progress to verify the objective.
+Find Similar videos.
+
