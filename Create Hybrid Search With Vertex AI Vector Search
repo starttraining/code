@@ -1,0 +1,172 @@
+Video: 
+File: https://github.com/starttraining/code/blob/main/hybrid-search-v1.0.0.ipynb
+Lab: https://www.cloudskillsboost.google/focuses/125025?catalog_rank=%7B%22rank%22%3A5%2C%22num_filters%22%3A0%2C%22has_search%22%3Atrue%7D&parent=catalog&search_id=52324494
+
+Create Hybrid Search With Vertex AI Vector Search
+
+Overview
+Vertex AI Vector Search supports hybrid search, a popular architecture pattern in information retrieval (IR) that combines both semantic search and keyword search (also called token-based search). With hybrid search, developers can take advantage of the best of the two approaches, effectively providing higher search quality.
+
+With this lab you learn how to use hybrid search with a Google merchandise dataset of products. At the end of the lab you will compare the results of the hybrid search to token-based search.
+
+When you start the lab, the environment will contain the resources that are shown in the following diagram.
+
+Architecture provided to you at lab launch.
+
+By the end of the lab, you will have used the architecture to perform several tasks.
+
+Architecture you build upon completion of lab.
+
+The following table provides a detailed explanation of each task in relation to the lab architecture.
+
+Numbered Task	Detail
+1.	Open the notebook in Vertex AI Workbench and choose the kernel.
+2.	Install packages, and configure the notebook for your project:
+You will use the Google Gen AI SDK to work with the text embeddings model through the Developer API and Vertex AI. This will require you to install Python libraries and reference them throughout the lab. You also need to configure the notebook to have access to resources in your project, like the Cloud Storage bucket provided to you at lab launch.
+3.	Prepare the dataset:
+In this task you download the dataset .csv file including the Google Merch Shop items, and add them to a Pandas DataFrame.
+4.	Use Token-based Search:
+You will train a vectorizer, a model that generates sparse embeddings from text and then apply it to the dataset.
+5.	Create an index endpoint:
+Before you can use hybrid search in Vertex AI Vector Search, you have to create an index endpoint.
+6.	Create the hybrid query index and deploy it to the endpoint:
+You will get the 'text-embedding-005' model to generate dense embeddings for your dataset items, which will be combined with the sparse embeddings to create the hybrid index. Once this is complete you will deploy the hybrid index to your endpoint.
+7.	Run the hybrid query:
+With your index deployed you first need to create the HybridQuery object to encapsulate the sparse embedding of the query text, and then you can run your query.
+Prerequisites
+Before starting this lab, you should be familiar with:
+
+Basic Python programming.
+General API concepts.
+Running Python code in a Jupyter notebook on Vertex AI Workbench.
+Objectives
+In this lab, you will:
+
+Use hybrid search in Vertex AI Vector Search.
+Create a hybrid search index and deploy it.
+Query the hybrid search index
+Setup and requirements
+Before you click the Start Lab button
+Read these instructions. Labs are timed and you cannot pause them. The timer, which starts when you click Start Lab, shows how long Google Cloud resources are made available to you.
+
+This hands-on lab lets you do the lab activities in a real cloud environment, not in a simulation or demo environment. It does so by giving you new, temporary credentials you use to sign in and access Google Cloud for the duration of the lab.
+
+To complete this lab, you need:
+
+Access to a standard internet browser (Chrome browser recommended).
+Note: Use an Incognito (recommended) or private browser window to run this lab. This prevents conflicts between your personal account and the student account, which may cause extra charges incurred to your personal account.
+Time to complete the lab—remember, once you start, you cannot pause a lab.
+Note: Use only the student account for this lab. If you use a different Google Cloud account, you may incur charges to that account.
+How to start your lab and sign in to the Google Cloud console
+Click the Start Lab button. If you need to pay for the lab, a dialog opens for you to select your payment method. On the left is the Lab Details pane with the following:
+
+The Open Google Cloud console button
+Time remaining
+The temporary credentials that you must use for this lab
+Other information, if needed, to step through this lab
+Click Open Google Cloud console (or right-click and select Open Link in Incognito Window if you are running the Chrome browser).
+
+The lab spins up resources, and then opens another tab that shows the Sign in page.
+
+Tip: Arrange the tabs in separate windows, side-by-side.
+
+Note: If you see the Choose an account dialog, click Use Another Account.
+If necessary, copy the Username below and paste it into the Sign in dialog.
+
+"Username"
+Copied!
+You can also find the Username in the Lab Details pane.
+
+Click Next.
+
+Copy the Password below and paste it into the Welcome dialog.
+
+"Password"
+Copied!
+You can also find the Password in the Lab Details pane.
+
+Click Next.
+
+Important: You must use the credentials the lab provides you. Do not use your Google Cloud account credentials.
+Note: Using your own Google Cloud account for this lab may incur extra charges.
+Click through the subsequent pages:
+
+Accept the terms and conditions.
+Do not add recovery options or two-factor authentication (because this is a temporary account).
+Do not sign up for free trials.
+After a few moments, the Google Cloud console opens in this tab.
+
+Note: To access Google Cloud products and services, click the Navigation menu or type the service or product name in the Search field. Navigation menu icon and Search field
+Task 1. Open the notebook in Vertex AI Workbench and choose kernel
+In the Google Cloud console, on the Navigation menu (Navigation menu icon), click Vertex AI > Workbench.
+
+Find the Workbench instance name instance and click on the Open JupyterLab button.
+
+The JupyterLab interface for your Workbench instance opens in a new browser tab.
+
+Note: If you do not see notebooks in JupyterLab, please follow these additional steps to reset the instance:
+1. Close the browser tab for JupyterLab, and return to the Workbench home page.
+
+2. Select the checkbox next to the instance name, and click Reset.
+
+3. After the Open JupyterLab button is enabled again, wait one minute, and then click Open JupyterLab.
+
+Open the notebook name file.
+
+In the Select Kernel dialog, choose Python 3 from the list of available kernels.
+
+Task 2. Install packages, and configure the notebook.
+To start using the notebook, you begin with section 1, Create sparse embeddings.
+
+In this task you install the required Python packages, restart the kernel runtime, configure your notebook to use your project and region, and import libraries.
+
+Complete the cells in Task 2, Install packages, and configure the notebook.
+
+For Project ID, use Project ID, and for Location, use Region, if these aren't already populated for you.
+
+Click Check my progress to verify the objective.
+Install packages and configure the notebook.
+
+Task 3. Prepare the dataset
+In this task, you download the dataset .csv file, and prepare it for use with your notebook.
+
+Complete all the cells in Task 3 Prepare the dataset within the notebook.
+Click Check my progress to verify the objective.
+Prepare the dataset.
+
+Task 4. Create sparse embedding
+In this task, you will create a sparse embedding and search for the "Chrome Dino Pin" item in the dataset to get the vector-based values and dimensions. You will also retrieve these values for the other products in the dataset. You will then save them to the items.json file within Workbench and copy this file to your Cloud Storage bucket.
+
+Run through the Create sparse embedding task of the notebook.
+Click Check my progress to verify the objective.
+Create sparse embedding.
+
+Task 5. Create an index endpoint
+Now you will move on to section 2 of the notebook where you will use hybrid search.
+
+First, in this fifth task, you will create an index endpoint.
+
+Run through the Create an index endpoint task of the notebook.
+Click Check my progress to verify the objective.
+Create an index endpoint.
+
+Task 6. Create the hybrid index and deploy it to the Endpoint
+In this task, you will retrieve the text embedding model, run a sample query for dense embeddings for an item, and then for all items. You will then store these in the items.json file. You will then create the hybrid index from this file and deploy the index to the endpoint.
+
+Run through the Create the hybrid index and deploy it to the endpoint task of the notebook.
+Note: The creation of the hybrid index takes approximately 4 to 5 minutes to complete.
+Note: The deployment of the hybrid index takes 30 minutes to complete.
+While you are waiting for the hybrid index to be deployed, you can observe its deployment by going to Vertex AI > Vector Search > Index Endpoints.
+
+You can also take time to review this demo. The demo provides a realistic example that will help you learn how Vector Search works, explore semantic and hybrid search, and see re-ranking in action. Submit a brief description of an animal, plant, e-commerce merchandise, or other item, and allow Vector Search to complete the remaining steps!
+
+Important: You will need to access the Vertex AI Vector Search, by going to Vertex AI > Vector Search and access both the Indexes and Index Endpoints listed. You will see the status change as the resource creation is finalized.
+Click Check my progress to verify the objective.
+Create the hybrid index and deploy it to the endpoint.
+
+Task 7. Run a hybrid query
+In this task, you run a hybrid query with the hybrid index that you just deployed and you will compare the results of this query with the sparse embeddings.
+
+Run through the Run a hybrid query task of the notebook.
+Click Check my progress to verify the objective.
+Run a hybrid query.
