@@ -1,0 +1,24 @@
+Video: https://youtu.be/aS-BM9legSc
+
+Step 1: Get the core screens for the app
+Build a simple Workout Tracker app where users can: 
+- Log different types of workouts (exercise name, sets, reps, or duration) 
+- View a history of all logged workouts 
+- See a progress dashboard that summarizes their activity over time 
+
+Step 2: Enhance the UI design
+Make the workout tracker app visually appealing by updating the design. Specifically: 
+- Add workout categories with clear icons 
+- Improve the overall layout for better readability 
+- Style the progress form to look clean and modern 
+- Apply a consistent color scheme (e.g., calming blues and greens) 
+
+Step 3: Integrate the workout app with Supabase
+Let's add authorization and store data in Supabase: 
+1. The user shouldn’t see the main app UI if they are not logged in. 
+2. Authorization will be based on username and password. 
+3. Store login details, workout history, and personal preferences in Supabase tables. 
+4. Build an edge function to securely handle workout-related queries. 
+5. Store sensitive config values in the .env file. 
+6. Do you need anything from me? 
+7. Provide me with the SQL queries for creating the database tables. 
