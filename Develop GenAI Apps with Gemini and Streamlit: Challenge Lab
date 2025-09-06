@@ -1,0 +1,20 @@
+git clone https://github.com/GoogleCloudPlatform/generative-ai.git
+
+TASK 4 
+gcloud artifacts repositories create "$AR_REPO" \
+  --location="$REGION" \
+  --repository-format=docker
+
+gcloud builds submit \
+  --tag "$REGION-docker.pkg.dev/$PROJECT/$AR_REPO/$SERVICE_NAME"
+
+TASK 5 
+gcloud run deploy "$SERVICE_NAME" \
+  --image="$REGION-docker.pkg.dev/$PROJECT/$AR_REPO/$SERVICE_NAME" \
+  --port=8080 \
+  --allow-unauthenticated \
+  --region=$REGION \
+  --platform managed \
+  --project=$PROJECT \
+  --set-env-vars=PROJECT=$PROJECT,REGION=$REGION
+ 
